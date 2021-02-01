@@ -9,11 +9,7 @@ class Joke
     и мэри сью вершит судьбу'
   ]
 
-  def initialize
-    @jokes = JOKE_LIST
-  end
-
   def select_random
-    @joke = @jokes.sample
+    @joke = JOKE_LIST.sample
   end
 end

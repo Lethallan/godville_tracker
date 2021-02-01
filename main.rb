@@ -21,27 +21,41 @@ Telegram::Bot::Client.run(token) do |bot|
       text: "#{message.text}",
       reply_markup: markup)
     case message.text
-    when 'Справка о токенах в Godville'
-      bot.api.send_message(
-        chat_id: message.chat.id,
-        text: "Герой ищет себя...")
-    when 'Посмотреть информацию о герое'
-      bot.api.send_message(
-        chat_id: message.chat.id,
-        text: "Введите имя бога")
-      bot.listen do |name|
-        god = name.text
-        @data = Godville.new(god).parse
+      when 'Справка о токенах в Godville'
         bot.api.send_message(
-          chat_id: name.chat.id,
-          text: "#{@data}")
-      end
-    when 'Шутка'
-      joke = Joke.new
+          chat_id: message.chat.id,
+          text: "Герой ищет себя...")
+      when 'Посмотреть информацию о герое'
+        bot.api.send_message(
+          chat_id: message.chat.id,
+          text: "Введите имя бога")
+        bot.listen do |name|
+          god = name.text
+          if god == 'Шутка'
+            bot.api.send_message(
+              chat_id: message.chat.id,
+              text: "Анекдот про нюанс")
+          elsif god == 'Справка о токенах в Godville'
+            bot.api.send_message(
+              chat_id: message.chat.id,
+              text: "Это неправильные пчёлы...")
+          else
+            @data = Godville.new(god).parse
+            bot.api.send_message(
+              chat_id: name.chat.id,
+              text: "#{@data}")
+          end
+        end
+      when 'Шутка'
+        joke = Joke.new
 
-      bot.api.send_message(
-        chat_id: message.chat.id,
-        text: joke.select_random)
+        bot.api.send_message(
+          chat_id: message.chat.id,
+          text: joke.select_random)
+      else
+        bot.api.send_message(
+          chat_id: message.chat.id,
+          text: "Сбой в матрице")
     end
   end
 end
